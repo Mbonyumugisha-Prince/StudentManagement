@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'features/assignments/assignment_page.dart';
+import 'package:flutter/services.dart';
+import 'features/authentication/login.dart';
 
 void main() {
   runApp(const StudentAcademicApp());
@@ -10,14 +11,20 @@ class StudentAcademicApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Student Academic Platform',
-      theme: ThemeData(
-        useMaterial3: true,
-        fontFamily: 'Roboto',
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: const SystemUiOverlayStyle(
+        statusBarIconBrightness: Brightness.light,
+        statusBarBrightness: Brightness.dark,
       ),
-      home: const AssignmentsPage(),
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Student Academic Platform',
+        theme: ThemeData(
+          useMaterial3: true,
+          fontFamily: 'Roboto',
+        ),
+        home: const LoginScreen(),
+      ),
     );
   }
 }
