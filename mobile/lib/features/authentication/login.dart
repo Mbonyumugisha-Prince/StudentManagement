@@ -162,7 +162,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       CustomButton(
                         text: 'Login',
                         onPressed: _login,
-                        textColor: AppColors.primaryGold,
+                        textColor: AppColors.primaryWhite,
                         backgroundColor: AppColors.primaryDark,
                       ),
                       const SizedBox(height: 12),

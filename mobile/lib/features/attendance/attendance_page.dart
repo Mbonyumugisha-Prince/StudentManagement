@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../authentication/login.dart';
 import '../assignments/assignment_page.dart';
 import '../dashboard/dashboard_page.dart';
+import '../profile/profile_page.dart';
+import '../schedule/schedule_page.dart';
 import 'attendance_store.dart';
 import '../widgets/backgroundWithPattern.dart';
 import '../widgets/headerText.dart';
@@ -74,7 +76,19 @@ class _AttendancePageState extends State<AttendancePage> {
       );
       return;
     }
-    // Handle index 3 (Scheduling) if implemented later
+    if (index == 3) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (_) => SchedulePage(
+            displayName: widget.displayName,
+            firstName: widget.firstName,
+            lastName: widget.lastName,
+            email: widget.email,
+          ),
+        ),
+      );
+      return;
+    }
     setState(() => selectedNavIndex = index);
   }
 
@@ -103,14 +117,26 @@ class _AttendancePageState extends State<AttendancePage> {
                     Row(
                       children: [
                         const Spacer(),
-                        CircleAvatar(
-                          radius: 18,
-                          backgroundColor: AppColors.primaryDark,
-                          child: Text(
-                            _initials,
-                            style: const TextStyle(
-                              color: AppColors.primaryGold,
-                              fontWeight: FontWeight.w600,
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) => ProfilePage(
+                                  fullName: _displayName,
+                                  email: widget.email,
+                                ),
+                              ),
+                            );
+                          },
+                          child: CircleAvatar(
+                            radius: 18,
+                            backgroundColor: AppColors.primaryDark,
+                            child: Text(
+                              _initials,
+                              style: const TextStyle(
+                                color: AppColors.primaryWhite,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ),
                         ),
@@ -150,7 +176,7 @@ class _AttendancePageState extends State<AttendancePage> {
                                     },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: AppColors.primaryDark,
-                                      foregroundColor: AppColors.primaryGold,
+                                      foregroundColor: AppColors.primaryWhite,
                                     ),
                                     child: const Text('Logout'),
                                   ),

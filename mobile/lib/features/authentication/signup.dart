@@ -166,7 +166,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         CustomButton(
                           text: 'Sign Up',
                           onPressed: _submit,
-                          textColor: AppColors.primaryGold,
+                          textColor: AppColors.primaryWhite,
                           backgroundColor: AppColors.primaryDark,
                         ),
                         const SizedBox(height: 14),

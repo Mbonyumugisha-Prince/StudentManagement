@@ -12,10 +12,24 @@ class ScheduleStore {
 
   void add(ScheduledSession session) {
     _sessions.add(session);
-    // Sort by day and then start time
+    _sort();
+  }
+
+  void update(ScheduledSession session) {
+    final index = _sessions.indexWhere((s) => s.id == session.id);
+    if (index == -1) return;
+    _sessions[index] = session;
+    _sort();
+  }
+
+  void remove(String id) {
+    _sessions.removeWhere((s) => s.id == id);
+  }
+
+  void _sort() {
     _sessions.sort((a, b) {
-      if (a.dayOfWeek != b.dayOfWeek) {
-        return a.dayOfWeek.compareTo(b.dayOfWeek);
+      if (a.date != b.date) {
+        return a.date.compareTo(b.date);
       }
       final aMinutes = a.startTime.hour * 60 + a.startTime.minute;
       final bMinutes = b.startTime.hour * 60 + b.startTime.minute;
@@ -27,30 +41,87 @@ class ScheduleStore {
     if (_seeded || _sessions.isNotEmpty) return;
     _seeded = true;
 
-    // Seed data covers Monday to Friday
-    // Monday (1)
-    add(ScheduledSession(id: 's1', subject: 'Mathematics', startTime: const TimeOfDay(hour: 9, minute: 0), endTime: const TimeOfDay(hour: 10, minute: 30), room: '101', dayOfWeek: 1));
-    add(ScheduledSession(id: 's2', subject: 'Physics', startTime: const TimeOfDay(hour: 11, minute: 0), endTime: const TimeOfDay(hour: 12, minute: 30), room: 'Lab A', dayOfWeek: 1));
-    
-    // Tuesday (2)
-    add(ScheduledSession(id: 's3', subject: 'Computer Science', startTime: const TimeOfDay(hour: 9, minute: 0), endTime: const TimeOfDay(hour: 11, minute: 0), room: '204', dayOfWeek: 2));
-    
-    // Wednesday (3)
-    add(ScheduledSession(id: 's4', subject: 'History', startTime: const TimeOfDay(hour: 10, minute: 0), endTime: const TimeOfDay(hour: 11, minute: 30), room: '105', dayOfWeek: 3));
-    add(ScheduledSession(id: 's5', subject: 'Mathematics', startTime: const TimeOfDay(hour: 13, minute: 0), endTime: const TimeOfDay(hour: 14, minute: 30), room: '101', dayOfWeek: 3));
+    final now = DateTime.now();
+    final monday = now.subtract(Duration(days: now.weekday - 1));
+    DateTime d(int offset) => monday.add(Duration(days: offset));
 
-    // Thursday (4)
-    add(ScheduledSession(id: 's6', subject: 'Physics', startTime: const TimeOfDay(hour: 9, minute: 0), endTime: const TimeOfDay(hour: 10, minute: 30), room: '102', dayOfWeek: 4));
-
-    // Friday (5)
-    add(ScheduledSession(id: 's7', subject: 'Computer Science', startTime: const TimeOfDay(hour: 10, minute: 0), endTime: const TimeOfDay(hour: 12, minute: 0), room: '204', dayOfWeek: 5));
-    
-    // Also add sessions for "Today" regardless of the actual day of week, for demo purposes if today is Sat/Sun
-    // Or just rely on the user running this on a weekday. 
-    // Ideally, for a demo, we might want to ensure "Today" always has something.
-    // However, I will stick to static days. If today is Sunday (7), it will show empty, which is correct.
-    // If the user wants to see data, I can add a hack or just ensure the seed covers current day.
-    // Let's just trust the static schedule for now.
+    add(ScheduledSession(
+      id: 's1',
+      title: 'Mathematics',
+      date: d(0),
+      startTime: const TimeOfDay(hour: 9, minute: 0),
+      endTime: const TimeOfDay(hour: 10, minute: 30),
+      location: 'Room 101',
+      sessionType: 'Class',
+      dayOfWeek: 1,
+      isPresent: true,
+    ));
+    add(ScheduledSession(
+      id: 's2',
+      title: 'Physics',
+      date: d(0),
+      startTime: const TimeOfDay(hour: 11, minute: 0),
+      endTime: const TimeOfDay(hour: 12, minute: 30),
+      location: 'Lab A',
+      sessionType: 'Class',
+      dayOfWeek: 1,
+      isPresent: false,
+    ));
+    add(ScheduledSession(
+      id: 's3',
+      title: 'Computer Science',
+      date: d(1),
+      startTime: const TimeOfDay(hour: 9, minute: 0),
+      endTime: const TimeOfDay(hour: 11, minute: 0),
+      location: 'Room 204',
+      sessionType: 'Study Group',
+      dayOfWeek: 2,
+      isPresent: true,
+    ));
+    add(ScheduledSession(
+      id: 's4',
+      title: 'History',
+      date: d(2),
+      startTime: const TimeOfDay(hour: 10, minute: 0),
+      endTime: const TimeOfDay(hour: 11, minute: 30),
+      location: 'Room 105',
+      sessionType: 'Class',
+      dayOfWeek: 3,
+      isPresent: true,
+    ));
+    add(ScheduledSession(
+      id: 's5',
+      title: 'Math Mastery',
+      date: d(2),
+      startTime: const TimeOfDay(hour: 13, minute: 0),
+      endTime: const TimeOfDay(hour: 14, minute: 30),
+      location: 'Room 101',
+      sessionType: 'Mastery Session',
+      dayOfWeek: 3,
+      isPresent: true,
+    ));
+    add(ScheduledSession(
+      id: 's6',
+      title: 'Physics PSL',
+      date: d(3),
+      startTime: const TimeOfDay(hour: 9, minute: 0),
+      endTime: const TimeOfDay(hour: 10, minute: 30),
+      location: 'Room 102',
+      sessionType: 'PSL Meeting',
+      dayOfWeek: 4,
+      isPresent: false,
+    ));
+    add(ScheduledSession(
+      id: 's7',
+      title: 'AI Study Group',
+      date: d(4),
+      startTime: const TimeOfDay(hour: 10, minute: 0),
+      endTime: const TimeOfDay(hour: 12, minute: 0),
+      location: 'Room 204',
+      sessionType: 'Study Group',
+      dayOfWeek: 5,
+      isPresent: true,
+    ));
   }
 
   List<ScheduledSession> getSessionsForDay(int dayOfWeek) {

@@ -98,7 +98,7 @@ class _AssignmentFormState extends State<AssignmentForm> {
                           data: Theme.of(context).copyWith(
                             colorScheme: const ColorScheme.light(
                               primary: AppColors.primaryDark,
-                              onPrimary: AppColors.primaryGold,
+                              onPrimary: AppColors.primaryWhite,
                               onSurface: AppColors.textPrimary,
                             ),
                           ),
@@ -152,7 +152,7 @@ class _AssignmentFormState extends State<AssignmentForm> {
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primaryDark,
-                      foregroundColor: AppColors.primaryGold,
+                      foregroundColor: AppColors.primaryWhite,
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),

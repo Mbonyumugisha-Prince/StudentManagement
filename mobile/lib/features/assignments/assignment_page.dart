@@ -5,6 +5,7 @@ import '../authentication/login.dart';
 import '../profile/profile_page.dart';
 import '../attendance/attendance_page.dart';
 import '../dashboard/dashboard_page.dart';
+import '../schedule/schedule_page.dart';
 import '../widgets/backgroundWithPattern.dart';
 import '../widgets/headerText.dart';
 import '../../core/theme/app_colors.dart';
@@ -124,6 +125,19 @@ class _AssignmentsPageState extends State<AssignmentsPage> {
       );
       return;
     }
+    if (index == 3) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (_) => SchedulePage(
+            displayName: widget.displayName,
+            firstName: widget.firstName,
+            lastName: widget.lastName,
+            email: widget.email,
+          ),
+        ),
+      );
+      return;
+    }
     setState(() => selectedNavIndex = index);
   }
 
@@ -135,7 +149,7 @@ class _AssignmentsPageState extends State<AssignmentsPage> {
     return Scaffold(
       backgroundColor: bg,
       floatingActionButton: FloatingActionButton(
-        backgroundColor: AppColors.primaryGold,
+        backgroundColor: AppColors.primaryWhite,
         child: const Icon(Icons.add, color: Colors.black),
         onPressed: () => _openForm(),
       ),
@@ -173,7 +187,7 @@ class _AssignmentsPageState extends State<AssignmentsPage> {
                             child: Text(
                               _initials,
                               style: const TextStyle(
-                                color: AppColors.primaryGold,
+                                color: AppColors.primaryWhite,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -214,7 +228,7 @@ class _AssignmentsPageState extends State<AssignmentsPage> {
                                     },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: AppColors.primaryDark,
-                                      foregroundColor: AppColors.primaryGold,
+                                      foregroundColor: AppColors.primaryWhite,
                                     ),
                                     child: const Text('Logout'),
                                   ),
@@ -286,7 +300,7 @@ class _AssignmentsPageState extends State<AssignmentsPage> {
                                         margin: const EdgeInsets.only(top: 6),
                                         height: 3,
                                         width: 24,
-                                        color: AppColors.primaryGold,
+                                        color: AppColors.primaryDark,
                                       ),
                                   ],
                                 ),
@@ -347,7 +361,7 @@ class _AssignmentsPageState extends State<AssignmentsPage> {
                                               ? const Icon(
                                                   Icons.check,
                                                   size: 14,
-                                                  color: AppColors.primaryGold,
+                                                  color: AppColors.primaryWhite,
                                                 )
                                               : null,
                                         ),

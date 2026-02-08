@@ -147,7 +147,7 @@ class _DashboardPageState extends State<DashboardPage> {
                           child: Text(
                             _initials,
                             style: const TextStyle(
-                              color: AppColors.primaryGold,
+                              color: AppColors.primaryWhite,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -189,7 +189,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor:
                                           AppColors.primaryDark,
-                                      foregroundColor: AppColors.primaryGold,
+                                      foregroundColor: AppColors.primaryWhite,
                                     ),
                                     child: const Text('Logout'),
                                   ),
@@ -380,7 +380,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          session.subject,
+                                          session.title,
                                           style: const TextStyle(
                                             fontWeight: FontWeight.w600,
                                             fontSize: 15,
@@ -388,7 +388,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                         ),
                                         const SizedBox(height: 2),
                                         Text(
-                                          session.room,
+                                          session.location,
                                           style: const TextStyle(
                                             color: Colors.black54,
                                             fontSize: 13,
