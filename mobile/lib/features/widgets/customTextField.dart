@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../core/theme/app_colors.dart';
 
 class CustomTextField extends StatefulWidget {
   final TextEditingController controller;
@@ -9,6 +10,7 @@ class CustomTextField extends StatefulWidget {
   final bool obscureText;
   final bool showToggleIcon;
   const CustomTextField({
+    super.key,
     required this.controller,
     required this.hintText,
     required this.icon,
@@ -20,7 +22,6 @@ class CustomTextField extends StatefulWidget {
 
   @override
   State<CustomTextField> createState() => _CustomTextFieldState();
-
 }
 
 class _CustomTextFieldState extends State<CustomTextField> {
@@ -34,7 +35,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
       decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(16),
@@ -42,21 +43,21 @@ class _CustomTextFieldState extends State<CustomTextField> {
       ),
       child: Row(
           children: [
-             Icon(widget.icon, color: const Color(0xFF1E293B)),
+             Icon(widget.icon, color: AppColors.primaryDark),
              const SizedBox(width: 12),
              Expanded(
               child: TextFormField(
                   controller: widget.controller,
-                  
                   obscureText: _obscure,
                   keyboardType: widget.keyboardType,
                   validator: widget.validator,
+                  style: const TextStyle(color: AppColors.textPrimary),
                   decoration: InputDecoration(
                     border: InputBorder.none,
                     hintText: widget.hintText,
                     hintStyle: const TextStyle(color: Colors.black45),
                     errorStyle: const TextStyle(
-                      color: Colors.red,
+                      color: AppColors.error,
                       fontSize: 12,
                       height: 1.2,
                     ),
@@ -72,7 +73,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                   },
                   icon: Icon(
                     _obscure ? Icons.visibility : Icons.visibility_off,
-                    color: const Color(0xFF1E293B)
+                    color: AppColors.primaryDark
 
                   )
                 )

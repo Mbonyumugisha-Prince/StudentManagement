@@ -7,6 +7,8 @@ import '../attendance/attendance_page.dart';
 import '../dashboard/dashboard_page.dart';
 import '../widgets/backgroundWithPattern.dart';
 import '../widgets/headerText.dart';
+import '../../core/theme/app_colors.dart';
+import '../widgets/custom_bottom_nav_bar.dart';
 
 class AssignmentsPage extends StatefulWidget {
   final String displayName;
@@ -30,6 +32,7 @@ class _AssignmentsPageState extends State<AssignmentsPage> {
   List<Assignment> assignments = [];
   int selectedTab = 0;
   int selectedNavIndex = 2;
+
   String get _displayName {
     final full = '${widget.firstName} ${widget.lastName}'.trim();
     if (full.isNotEmpty) return full;
@@ -73,7 +76,7 @@ class _AssignmentsPageState extends State<AssignmentsPage> {
     final result = await showModalBottomSheet<Assignment>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: const Color(0xFFF4F5F4),
+      backgroundColor: AppColors.background,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
@@ -93,72 +96,52 @@ class _AssignmentsPageState extends State<AssignmentsPage> {
     setState(() => assignments.remove(a));
   }
 
+  void _onNavTap(int index) {
+    if (index == selectedNavIndex) return;
+    if (index == 0) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (_) => DashboardPage(
+            displayName: widget.displayName,
+            firstName: widget.firstName,
+            lastName: widget.lastName,
+            email: widget.email,
+          ),
+        ),
+      );
+      return;
+    }
+    if (index == 1) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (_) => AttendancePage(
+            displayName: widget.displayName,
+            firstName: widget.firstName,
+            lastName: widget.lastName,
+            email: widget.email,
+          ),
+        ),
+      );
+      return;
+    }
+    setState(() => selectedNavIndex = index);
+  }
+
   @override
   Widget build(BuildContext context) {
     final bg = Colors.black;
-    final card = const Color(0xFFF4F5F4);
+    final card = AppColors.background;
 
     return Scaffold(
       backgroundColor: bg,
       floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color(0xFF1E293B),
-        child: const Icon(Icons.add, color: Colors.white),
+        backgroundColor: AppColors.primaryGold,
+        child: const Icon(Icons.add, color: Colors.black),
         onPressed: () => _openForm(),
       ),
-      bottomNavigationBar: BottomNavigationBar(
+      bottomNavigationBar: CustomBottomNavBar(
         currentIndex: selectedNavIndex,
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: Colors.white,
-        selectedItemColor: Colors.black,
-        unselectedItemColor: Colors.grey,
-        onTap: (index) {
-          if (index == selectedNavIndex) return;
-          if (index == 0) {
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(
-                builder: (_) => DashboardPage(
-                  displayName: widget.displayName,
-                  firstName: widget.firstName,
-                  lastName: widget.lastName,
-                  email: widget.email,
-                ),
-              ),
-            );
-            return;
-          }
-          if (index == 1) {
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(
-                builder: (_) => AttendancePage(
-                  displayName: widget.displayName,
-                  firstName: widget.firstName,
-                  lastName: widget.lastName,
-                  email: widget.email,
-                ),
-              ),
-            );
-            return;
-          }
-          setState(() => selectedNavIndex = index);
-        },
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.dashboard_outlined),
-            label: 'Dashboard',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.how_to_reg_outlined),
-            label: 'Attendance',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.assignment_outlined),
-            label: 'Assignment',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.event_note_outlined),
-            label: 'Scheduling',
-          ),
-        ],
+        onTap: _onNavTap,
       ),
       body: BackgroundWithPattern(
         child: Column(
@@ -186,11 +169,11 @@ class _AssignmentsPageState extends State<AssignmentsPage> {
                           },
                           child: CircleAvatar(
                             radius: 18,
-                            backgroundColor: const Color(0xFF1E293B),
+                            backgroundColor: AppColors.primaryDark,
                             child: Text(
                               _initials,
                               style: const TextStyle(
-                                color: Colors.white,
+                                color: AppColors.primaryGold,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -230,8 +213,8 @@ class _AssignmentsPageState extends State<AssignmentsPage> {
                                       );
                                     },
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: const Color(0xFF1E293B),
-                                      foregroundColor: Colors.white,
+                                      backgroundColor: AppColors.primaryDark,
+                                      foregroundColor: AppColors.primaryGold,
                                     ),
                                     child: const Text('Logout'),
                                   ),
@@ -294,7 +277,7 @@ class _AssignmentsPageState extends State<AssignmentsPage> {
                                       style: TextStyle(
                                         fontWeight: FontWeight.w600,
                                         color: selectedTab == index
-                                            ? Colors.black
+                                            ? AppColors.primaryDark
                                             : Colors.grey,
                                       ),
                                     ),
@@ -303,7 +286,7 @@ class _AssignmentsPageState extends State<AssignmentsPage> {
                                         margin: const EdgeInsets.only(top: 6),
                                         height: 3,
                                         width: 24,
-                                        color: Colors.black,
+                                        color: AppColors.primaryGold,
                                       ),
                                   ],
                                 ),
@@ -321,10 +304,10 @@ class _AssignmentsPageState extends State<AssignmentsPage> {
                           itemBuilder: (_, i) {
                             final a = filteredAssignments[i];
                             final priorityColor = a.priority == 'High'
-                                ? const Color(0xFFDC2626)
+                                ? AppColors.error
                                 : a.priority == 'Medium'
-                                    ? const Color(0xFFF59E0B)
-                                    : const Color(0xFF10B981);
+                                    ? Colors.orange
+                                    : AppColors.success;
                             return Container(
                               padding: const EdgeInsets.all(14),
                               decoration: BoxDecoration(
@@ -353,7 +336,7 @@ class _AssignmentsPageState extends State<AssignmentsPage> {
                                           height: 20,
                                           decoration: BoxDecoration(
                                             color: a.isCompleted
-                                                ? const Color(0xFF1E293B)
+                                                ? AppColors.primaryDark
                                                 : Colors.transparent,
                                             border: Border.all(
                                                 color: Colors.black26),
@@ -364,7 +347,7 @@ class _AssignmentsPageState extends State<AssignmentsPage> {
                                               ? const Icon(
                                                   Icons.check,
                                                   size: 14,
-                                                  color: Colors.white,
+                                                  color: AppColors.primaryGold,
                                                 )
                                               : null,
                                         ),
@@ -379,6 +362,7 @@ class _AssignmentsPageState extends State<AssignmentsPage> {
                                             decoration: a.isCompleted
                                                 ? TextDecoration.lineThrough
                                                 : null,
+                                            color: a.isCompleted ? Colors.grey : AppColors.textPrimary,
                                           ),
                                         ),
                                       ),

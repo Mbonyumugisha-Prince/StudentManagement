@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
-import 'package:mobile/features/widgets/CutomButton.dart';
-import 'package:mobile/features/widgets/forgot_password_dialog.dart';
+import '../widgets/cutomButton.dart';
+import '../widgets/forgot_password_dialog.dart';
 import 'signup.dart';
 import '../widgets/customTextField.dart';
 import '../widgets/headerText.dart';
 import '../widgets/rememberMeForgotPassword.dart';
 import '../widgets/signUpLink.dart';
 import '../widgets/backgroundWithPattern.dart';
-import '../widgets/backButtonWidget.dart';
 import '../services/StudentStore.dart';
-import '../assignments/assignment_page.dart' as assignment;
+import '../dashboard/dashboard_page.dart';
+import '../../core/theme/app_colors.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -36,7 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Please fill all fields'),
-          backgroundColor: Colors.red,
+          backgroundColor: AppColors.error,
         ),
       );
       return;
@@ -56,7 +56,7 @@ class _LoginScreenState extends State<LoginScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Invalid email or password'),
-          backgroundColor: Colors.red,
+          backgroundColor: AppColors.error,
         ),
       );
       debugPrint('Login failed - Invalid credentials');
@@ -69,16 +69,16 @@ class _LoginScreenState extends State<LoginScreen> {
         content: Text(
           'Welcome back, ${matchedStudent.first_name}!',
         ),
-        backgroundColor: Colors.green,
+        backgroundColor: AppColors.success,
       ),
     );
 
-    // Navigate to assignment page
+    // Navigate to Dashboard
     final displayName =
         '${matchedStudent.first_name} ${matchedStudent.last_name}'.trim();
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
-        builder: (_) => assignment.AssignmentsPage(
+        builder: (_) => DashboardPage(
           displayName: displayName.isEmpty ? 'User' : displayName,
           firstName: matchedStudent.first_name,
           lastName: matchedStudent.last_name,
@@ -90,11 +90,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final bg =  Colors.black;
-    final card = const Color(0xFFF4F5F4);
-
     return Scaffold(
-      backgroundColor: bg,
+      backgroundColor: Colors.black,
       body: BackgroundWithPattern(
         child: Column(
           children: [
@@ -103,9 +100,9 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 children: [
                   const SizedBox(height: 100),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: const HeaderText(
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 24),
+                    child: HeaderText(
                       title: 'Welcome Back',
                       subtitle: 'Login to your account to continue',
                     ),
@@ -117,9 +114,9 @@ class _LoginScreenState extends State<LoginScreen> {
             Expanded(
               child: Container(
                 width: double.infinity,
-                decoration: BoxDecoration(
-                  color: card,
-                  borderRadius: const BorderRadius.vertical(
+                decoration: const BoxDecoration(
+                  color: AppColors.background,
+                  borderRadius: BorderRadius.vertical(
                     top: Radius.circular(28),
                   ),
                 ),
@@ -165,7 +162,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       CustomButton(
                         text: 'Login',
                         onPressed: _login,
-                        textColor: Colors.white,
+                        textColor: AppColors.primaryGold,
+                        backgroundColor: AppColors.primaryDark,
                       ),
                       const SizedBox(height: 12),
                       SignUpLink(

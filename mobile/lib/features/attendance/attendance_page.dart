@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import '../authentication/login.dart';
 import '../assignments/assignment_page.dart';
-import '../profile/profile_page.dart';
 import '../dashboard/dashboard_page.dart';
+import 'attendance_store.dart';
 import '../widgets/backgroundWithPattern.dart';
 import '../widgets/headerText.dart';
-import 'attendance_store.dart';
+import '../../core/theme/app_colors.dart';
+import '../widgets/custom_bottom_nav_bar.dart';
 
 class AttendancePage extends StatefulWidget {
   final String displayName;
@@ -26,7 +27,7 @@ class AttendancePage extends StatefulWidget {
 }
 
 class _AttendancePageState extends State<AttendancePage> {
-  int selectedNavIndex = 1;
+  int selectedNavIndex = 1; // Attendance is index 1
 
   String get _displayName {
     final full = '${widget.firstName} ${widget.lastName}'.trim();
@@ -73,44 +74,21 @@ class _AttendancePageState extends State<AttendancePage> {
       );
       return;
     }
+    // Handle index 3 (Scheduling) if implemented later
     setState(() => selectedNavIndex = index);
   }
 
   @override
   Widget build(BuildContext context) {
     final bg = Colors.black;
-    final card = const Color(0xFFF4F5F4);
+    final card = AppColors.background;
     final store = AttendanceStore.instance;
-    store.seedIfEmpty();
-    final records = store.getAll();
 
     return Scaffold(
       backgroundColor: bg,
-      bottomNavigationBar: BottomNavigationBar(
+      bottomNavigationBar: CustomBottomNavBar(
         currentIndex: selectedNavIndex,
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: Colors.white,
-        selectedItemColor: Colors.black,
-        unselectedItemColor: Colors.grey,
         onTap: _onNavTap,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.dashboard_outlined),
-            label: 'Dashboard',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.how_to_reg_outlined),
-            label: 'Attendance',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.assignment_outlined),
-            label: 'Assignment',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.event_note_outlined),
-            label: 'Scheduling',
-          ),
-        ],
       ),
       body: BackgroundWithPattern(
         child: Column(
@@ -125,26 +103,14 @@ class _AttendancePageState extends State<AttendancePage> {
                     Row(
                       children: [
                         const Spacer(),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (_) => ProfilePage(
-                                  fullName: _displayName,
-                                  email: widget.email,
-                                ),
-                              ),
-                            );
-                          },
-                          child: CircleAvatar(
-                            radius: 18,
-                            backgroundColor: const Color(0xFF1E293B),
-                            child: Text(
-                              _initials,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                              ),
+                        CircleAvatar(
+                          radius: 18,
+                          backgroundColor: AppColors.primaryDark,
+                          child: Text(
+                            _initials,
+                            style: const TextStyle(
+                              color: AppColors.primaryGold,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                         ),
@@ -183,9 +149,8 @@ class _AttendancePageState extends State<AttendancePage> {
                                       );
                                     },
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor:
-                                          const Color(0xFF1E293B),
-                                      foregroundColor: Colors.white,
+                                      backgroundColor: AppColors.primaryDark,
+                                      foregroundColor: AppColors.primaryGold,
                                     ),
                                     child: const Text('Logout'),
                                   ),
@@ -221,33 +186,97 @@ class _AttendancePageState extends State<AttendancePage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _metricsCard(store),
-                      if (store.isBelowThreshold) ...[
-                        const SizedBox(height: 12),
-                        _alertCard(),
-                      ],
-                      const SizedBox(height: 16),
+                      Container(
+                        padding: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [AppColors.primaryDark, Colors.black],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.primaryDark.withOpacity(0.3),
+                              blurRadius: 10,
+                              offset: const Offset(0, 5),
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'Overall Attendance',
+                                  style: TextStyle(
+                                    color: Colors.white70,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  '${store.percentage.toStringAsFixed(1)}%',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 32,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 6),
+                              decoration: BoxDecoration(
+                                color: store.isBelowThreshold
+                                    ? Colors.redAccent.withOpacity(0.2)
+                                    : AppColors.primaryGold.withOpacity(0.2),
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(
+                                  color: store.isBelowThreshold
+                                      ? Colors.redAccent
+                                      : AppColors.primaryGold,
+                                ),
+                              ),
+                              child: Text(
+                                store.isBelowThreshold ? 'Warning' : 'Good',
+                                style: TextStyle(
+                                  color: store.isBelowThreshold
+                                      ? Colors.redAccent
+                                      : AppColors.primaryGold,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 24),
                       const Text(
-                        'Attendance History',
+                        'History',
                         style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary,
                         ),
                       ),
                       const SizedBox(height: 12),
                       Expanded(
-                        child: records.isEmpty
+                        child: store.getAll().isEmpty
                             ? const Center(
-                                child: Text('No attendance records yet.'),
+                                child: Text('No attendance records found.'),
                               )
                             : ListView.separated(
-                                itemCount: records.length,
+                                itemCount: store.getAll().length,
                                 separatorBuilder: (_, __) =>
-                                    const SizedBox(height: 10),
+                                    const SizedBox(height: 12),
                                 itemBuilder: (_, i) {
-                                  final r = records[i];
+                                  final r = store.getAll()[i];
                                   return Container(
-                                    padding: const EdgeInsets.all(14),
+                                    padding: const EdgeInsets.all(16),
                                     decoration: BoxDecoration(
                                       color: Colors.white,
                                       borderRadius: BorderRadius.circular(16),
@@ -262,28 +291,68 @@ class _AttendancePageState extends State<AttendancePage> {
                                     child: Row(
                                       children: [
                                         Container(
-                                          width: 10,
-                                          height: 10,
+                                          width: 48,
+                                          height: 48,
                                           decoration: BoxDecoration(
                                             color: r.isPresent
-                                                ? const Color(0xFF10B981)
-                                                : const Color(0xFFDC2626),
-                                            shape: BoxShape.circle,
+                                                ? AppColors.success.withOpacity(0.1)
+                                                : AppColors.error.withOpacity(0.1),
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                          ),
+                                          child: Icon(
+                                            r.isPresent
+                                                ? Icons.check_circle_outline
+                                                : Icons.cancel_outlined,
+                                            color: r.isPresent
+                                                ? AppColors.success
+                                                : AppColors.error,
                                           ),
                                         ),
-                                        const SizedBox(width: 10),
+                                        const SizedBox(width: 16),
                                         Expanded(
-                                          child: Text(
-                                            r.subject,
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.w600,
-                                            ),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                r.subject,
+                                                style: const TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 16,
+                                                  color: AppColors.textPrimary,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 4),
+                                              Text(
+                                                r.formattedDate,
+                                                style: const TextStyle(
+                                                  color: Colors.grey,
+                                                  fontSize: 14,
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ),
-                                        Text(
-                                          r.formattedDate,
-                                          style: const TextStyle(
-                                            color: Colors.black54,
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 10, vertical: 4),
+                                          decoration: BoxDecoration(
+                                            color: r.isPresent
+                                                ? AppColors.success.withOpacity(0.1)
+                                                : AppColors.error.withOpacity(0.1),
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                          ),
+                                          child: Text(
+                                            r.isPresent ? 'Present' : 'Absent',
+                                            style: TextStyle(
+                                              color: r.isPresent
+                                                  ? AppColors.success
+                                                  : AppColors.error,
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 12,
+                                            ),
                                           ),
                                         ),
                                       ],
@@ -299,74 +368,6 @@ class _AttendancePageState extends State<AttendancePage> {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _metricsCard(AttendanceStore store) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          _metricItem('Attendance', '${store.percentage.toStringAsFixed(1)}%'),
-          _metricItem('Present', '${store.presentClasses}'),
-          _metricItem('Absent', '${store.absentClasses}'),
-        ],
-      ),
-    );
-  }
-
-  Widget _metricItem(String label, String value) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          value,
-          style: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          label,
-          style: const TextStyle(color: Colors.black54),
-        ),
-      ],
-    );
-  }
-
-  Widget _alertCard() {
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: const Color(0xFFFEE2E2),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFFCA5A5)),
-      ),
-      child: const Row(
-        children: [
-          Icon(Icons.warning_amber_rounded, color: Color(0xFFDC2626)),
-          SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              'Your attendance is below 75%. Please improve it.',
-              style: TextStyle(color: Color(0xFF991B1B)),
-            ),
-          ),
-        ],
       ),
     );
   }

@@ -3,8 +3,12 @@ import '../authentication/login.dart';
 import '../assignments/assignment_page.dart';
 import '../attendance/attendance_page.dart';
 import '../attendance/attendance_store.dart';
+import '../assignments/assignment_store.dart';
+import '../schedule/schedule_store.dart';
 import '../widgets/backgroundWithPattern.dart';
 import '../widgets/headerText.dart';
+import '../../core/theme/app_colors.dart';
+import '../widgets/custom_bottom_nav_bar.dart';
 
 class DashboardPage extends StatefulWidget {
   final String displayName;
@@ -27,6 +31,15 @@ class DashboardPage extends StatefulWidget {
 class _DashboardPageState extends State<DashboardPage> {
   int selectedNavIndex = 0;
 
+  @override
+  void initState() {
+    super.initState();
+    // Ensure stores are seeded
+    AttendanceStore.instance.seedIfEmpty();
+    AssignmentStore.instance.seedIfEmpty();
+    ScheduleStore.instance.seedIfEmpty();
+  }
+
   String get _displayName {
     final full = '${widget.firstName} ${widget.lastName}'.trim();
     if (full.isNotEmpty) return full;
@@ -42,6 +55,28 @@ class _DashboardPageState extends State<DashboardPage> {
     if (parts.isEmpty) return 'U';
     if (parts.length == 1) return parts.first[0].toUpperCase();
     return (parts[0][0] + parts[1][0]).toUpperCase();
+  }
+
+  String get _formattedDate {
+    final now = DateTime.now();
+    final months = [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+    final weekDays = [
+      'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'
+    ];
+    return '${weekDays[now.weekday - 1]}, ${months[now.month - 1]} ${now.day}';
+  }
+
+  String get _academicWeek {
+    final now = DateTime.now();
+    // Assuming semester started on Jan 6, 2026
+    final start = DateTime(2026, 1, 6);
+    final diff = now.difference(start).inDays;
+    if (diff < 0) return 'Pre-Semester';
+    final week = (diff / 7).floor() + 1;
+    return 'Week $week';
   }
 
   void _onNavTap(int index) {
@@ -78,36 +113,20 @@ class _DashboardPageState extends State<DashboardPage> {
   @override
   Widget build(BuildContext context) {
     final bg = Colors.black;
-    final card = const Color(0xFFF4F5F4);
-    final store = AttendanceStore.instance;
+    final card = AppColors.background;
+    
+    final attendanceStore = AttendanceStore.instance;
+    final assignmentStore = AssignmentStore.instance;
+    final scheduleStore = ScheduleStore.instance;
+
+    final todaySessions = scheduleStore.getSessionsForDay(DateTime.now().weekday);
+    final upcomingAssignments = assignmentStore.getAssignmentsDueWithin(7);
 
     return Scaffold(
       backgroundColor: bg,
-      bottomNavigationBar: BottomNavigationBar(
+      bottomNavigationBar: CustomBottomNavBar(
         currentIndex: selectedNavIndex,
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: Colors.white,
-        selectedItemColor: Colors.black,
-        unselectedItemColor: Colors.grey,
         onTap: _onNavTap,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.dashboard_outlined),
-            label: 'Dashboard',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.how_to_reg_outlined),
-            label: 'Attendance',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.assignment_outlined),
-            label: 'Assignment',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.event_note_outlined),
-            label: 'Scheduling',
-          ),
-        ],
       ),
       body: BackgroundWithPattern(
         child: Column(
@@ -124,11 +143,11 @@ class _DashboardPageState extends State<DashboardPage> {
                         const Spacer(),
                         CircleAvatar(
                           radius: 18,
-                          backgroundColor: const Color(0xFF1E293B),
+                          backgroundColor: AppColors.primaryDark,
                           child: Text(
                             _initials,
                             style: const TextStyle(
-                              color: Colors.white,
+                              color: AppColors.primaryGold,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -169,8 +188,8 @@ class _DashboardPageState extends State<DashboardPage> {
                                     },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor:
-                                          const Color(0xFF1E293B),
-                                      foregroundColor: Colors.white,
+                                          AppColors.primaryDark,
+                                      foregroundColor: AppColors.primaryGold,
                                     ),
                                     child: const Text('Logout'),
                                   ),
@@ -201,13 +220,59 @@ class _DashboardPageState extends State<DashboardPage> {
                     top: Radius.circular(28),
                   ),
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.fromLTRB(20, 24, 20, 24),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      // Date and Week
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.05),
+                              blurRadius: 8,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  _formattedDate,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  _academicWeek,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.blueGrey,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const Icon(Icons.calendar_today_outlined, color: Colors.blueGrey),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+
                       const Text(
-                        'Attendance Summary',
+                        'Overview',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
@@ -231,13 +296,13 @@ class _DashboardPageState extends State<DashboardPage> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             _metricItem('Attendance',
-                                '${store.percentage.toStringAsFixed(1)}%'),
-                            _metricItem('Present', '${store.presentClasses}'),
-                            _metricItem('Absent', '${store.absentClasses}'),
+                                '${attendanceStore.percentage.toStringAsFixed(1)}%'),
+                            _metricItem('Assignments', '${assignmentStore.pendingCount}'), // Pending count
+                            _metricItem('Classes Today', '${todaySessions.length}'),
                           ],
                         ),
                       ),
-                      if (store.isBelowThreshold) ...[
+                      if (attendanceStore.isBelowThreshold) ...[
                         const SizedBox(height: 12),
                         Container(
                           padding: const EdgeInsets.all(14),
@@ -261,72 +326,186 @@ class _DashboardPageState extends State<DashboardPage> {
                           ),
                         ),
                       ],
+
                       const SizedBox(height: 20),
+                      
+                      // Today's Sessions
                       const Text(
-                        'Recent Attendance',
+                        "Today's Sessions",
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
                       const SizedBox(height: 12),
-                      Expanded(
-                        child: store.getAll().isEmpty
-                            ? const Center(
-                                child: Text('No attendance records yet.'),
-                              )
-                            : ListView.separated(
-                                itemCount: store.getAll().length.clamp(0, 5),
-                                separatorBuilder: (_, __) =>
-                                    const SizedBox(height: 10),
-                                itemBuilder: (_, i) {
-                                  final r = store.getAll()[i];
-                                  return Container(
-                                    padding: const EdgeInsets.all(14),
+                      if (todaySessions.isEmpty)
+                        const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 8.0),
+                          child: Text('No sessions scheduled for today.', style: TextStyle(color: Colors.grey)),
+                        )
+                      else
+                        ListView.separated(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: todaySessions.length,
+                          separatorBuilder: (_, __) => const SizedBox(height: 10),
+                          itemBuilder: (_, i) {
+                            final session = todaySessions[i];
+                            return Container(
+                              padding: const EdgeInsets.all(14),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(16),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.05),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: 4,
+                                    height: 40,
                                     decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(16),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withOpacity(0.05),
-                                          blurRadius: 8,
-                                          offset: const Offset(0, 4),
-                                        ),
-                                      ],
+                                      color: AppColors.primaryGold,
+                                      borderRadius: BorderRadius.circular(2),
                                     ),
-                                    child: Row(
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Container(
-                                          width: 10,
-                                          height: 10,
-                                          decoration: BoxDecoration(
-                                            color: r.isPresent
-                                                ? const Color(0xFF10B981)
-                                                : const Color(0xFFDC2626),
-                                            shape: BoxShape.circle,
-                                          ),
-                                        ),
-                                        const SizedBox(width: 10),
-                                        Expanded(
-                                          child: Text(
-                                            r.subject,
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          ),
-                                        ),
                                         Text(
-                                          r.formattedDate,
+                                          session.subject,
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 15,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 2),
+                                        Text(
+                                          session.room,
                                           style: const TextStyle(
                                             color: Colors.black54,
+                                            fontSize: 13,
                                           ),
                                         ),
                                       ],
                                     ),
-                                  );
-                                },
+                                  ),
+                                  Text(
+                                    session.timeRange,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 13,
+                                      color: Colors.black87,
+                                    ),
+                                  ),
+                                ],
                               ),
+                            );
+                          },
+                        ),
+
+                      const SizedBox(height: 20),
+
+                      // Upcoming Assignments
+                      const Text(
+                        'Assignments Due Soon',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
+                      const SizedBox(height: 12),
+                       if (upcomingAssignments.isEmpty)
+                        const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 8.0),
+                          child: Text('No assignments due in the next 7 days.', style: TextStyle(color: Colors.grey)),
+                        )
+                      else
+                        ListView.separated(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: upcomingAssignments.length,
+                          separatorBuilder: (_, __) => const SizedBox(height: 10),
+                          itemBuilder: (_, i) {
+                            final assignment = upcomingAssignments[i];
+                            return Container(
+                              padding: const EdgeInsets.all(14),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(16),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.05),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.assignment_late_outlined,
+                                    color: assignment.priority == 'High' ? Colors.redAccent : Colors.orangeAccent,
+                                    size: 24,
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          assignment.title,
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 15,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 2),
+                                        Text(
+                                          assignment.course,
+                                          style: const TextStyle(
+                                            color: Colors.black54,
+                                            fontSize: 13,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Text(
+                                        assignment.formattedDate,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 13,
+                                          color: Colors.black87,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 2),
+                                       Text(
+                                        assignment.priority,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 11,
+                                          color: assignment.priority == 'High' ? Colors.red : Colors.grey,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 40), // Bottom padding
                     ],
                   ),
                 ),

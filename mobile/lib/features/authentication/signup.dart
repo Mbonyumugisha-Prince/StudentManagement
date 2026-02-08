@@ -6,7 +6,8 @@ import '../services/StudentStore.dart';
 import '../widgets/customTextField.dart';
 import '../widgets/headerText.dart';
 import '../widgets/backgroundWithPattern.dart';
-import '../assignments/assignment_page.dart';
+import '../dashboard/dashboard_page.dart';
+import '../../core/theme/app_colors.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -40,7 +41,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Passwords do not match'),
-          backgroundColor: Colors.red,
+          backgroundColor: AppColors.error,
         ),
       );
       return;
@@ -58,13 +59,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Sign up successful! Data saved.'),
-        backgroundColor: Colors.green,
+        backgroundColor: AppColors.success,
       ),
     );
 
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
-        builder: (_) => AssignmentsPage(
+        builder: (_) => DashboardPage(
           displayName: _firstNameController.text.trim(),
           firstName: _firstNameController.text.trim(),
           lastName: _lastNameController.text.trim(),
@@ -76,11 +77,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final bg = Colors.black;
-    final card = const Color(0xFFF4F5F4);
-
     return Scaffold(
-      backgroundColor: bg,
+      backgroundColor: Colors.black,
       body: BackgroundWithPattern(
         child: Column(
           children: [
@@ -103,9 +101,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
             Expanded(
               child: Container(
                 width: double.infinity,
-                decoration: BoxDecoration(
-                  color: card,
-                  borderRadius: const BorderRadius.vertical(
+                decoration: const BoxDecoration(
+                  color: AppColors.background,
+                  borderRadius: BorderRadius.vertical(
                     top: Radius.circular(28),
                   ),
                 ),
@@ -168,7 +166,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         CustomButton(
                           text: 'Sign Up',
                           onPressed: _submit,
-                          textColor: Colors.white,
+                          textColor: AppColors.primaryGold,
+                          backgroundColor: AppColors.primaryDark,
                         ),
                         const SizedBox(height: 14),
                         Row(
@@ -187,7 +186,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 'Login',
                                 style: TextStyle(
                                   fontWeight: FontWeight.w600,
-                                  color: Color(0xFF1E293B),
+                                  color: AppColors.primaryDark,
                                   ),
                               ),
                             ),
