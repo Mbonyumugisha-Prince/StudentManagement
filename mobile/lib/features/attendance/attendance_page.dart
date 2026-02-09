@@ -94,8 +94,8 @@ class _AttendancePageState extends State<AttendancePage> {
 
   @override
   Widget build(BuildContext context) {
-    final bg = Colors.black;
-    final card = AppColors.background;
+    final bg = AppColors.primaryBlue;
+    final card = AppColors.primaryWhite;
     final store = AttendanceStore.instance;
 
     return Scaffold(
@@ -130,11 +130,11 @@ class _AttendancePageState extends State<AttendancePage> {
                           },
                           child: CircleAvatar(
                             radius: 18,
-                            backgroundColor: AppColors.primaryDark,
+                            backgroundColor: AppColors.primaryWhite,
                             child: Text(
                               _initials,
                               style: const TextStyle(
-                                color: AppColors.primaryWhite,
+                                color: AppColors.primaryBlue,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -147,21 +147,21 @@ class _AttendancePageState extends State<AttendancePage> {
                             showDialog(
                               context: context,
                               builder: (_) => AlertDialog(
-                                backgroundColor: Colors.black,
+                                backgroundColor: AppColors.primaryWhite,
                                 title: const Text(
                                   'Confirm Logout',
-                                  style: TextStyle(color: Colors.white),
+                                  style: TextStyle(color: AppColors.textPrimary),
                                 ),
                                 content: const Text(
                                   'Are you sure you want to log out?',
-                                  style: TextStyle(color: Colors.white),
+                                  style: TextStyle(color: AppColors.textSecondary),
                                 ),
                                 actions: [
                                   TextButton(
                                     onPressed: () =>
                                         Navigator.of(context).pop(),
                                     style: TextButton.styleFrom(
-                                      foregroundColor: Colors.white70,
+                                      foregroundColor: AppColors.textSecondary,
                                     ),
                                     child: const Text('Cancel'),
                                   ),
@@ -175,7 +175,7 @@ class _AttendancePageState extends State<AttendancePage> {
                                       );
                                     },
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: AppColors.primaryDark,
+                                      backgroundColor: AppColors.primaryRed,
                                       foregroundColor: AppColors.primaryWhite,
                                     ),
                                     child: const Text('Logout'),
@@ -184,7 +184,7 @@ class _AttendancePageState extends State<AttendancePage> {
                               ),
                             );
                           },
-                          icon: const Icon(Icons.logout, color: Colors.white),
+                          icon: const Icon(Icons.logout, color: AppColors.primaryWhite),
                         ),
                       ],
                     ),
@@ -216,14 +216,14 @@ class _AttendancePageState extends State<AttendancePage> {
                         padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(
                           gradient: const LinearGradient(
-                            colors: [AppColors.primaryDark, Colors.black],
+                            colors: [AppColors.primaryBlue, AppColors.darkBlue],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                           ),
                           borderRadius: BorderRadius.circular(20),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.primaryDark.withOpacity(0.3),
+                              color: AppColors.primaryBlue.withOpacity(0.3),
                               blurRadius: 10,
                               offset: const Offset(0, 5),
                             ),
@@ -238,7 +238,7 @@ class _AttendancePageState extends State<AttendancePage> {
                                 const Text(
                                   'Overall Attendance',
                                   style: TextStyle(
-                                    color: Colors.white70,
+                                    color: AppColors.primaryWhite,
                                     fontSize: 14,
                                   ),
                                 ),
@@ -246,7 +246,7 @@ class _AttendancePageState extends State<AttendancePage> {
                                 Text(
                                   '${store.percentage.toStringAsFixed(1)}%',
                                   style: const TextStyle(
-                                    color: Colors.white,
+                                    color: AppColors.primaryWhite,
                                     fontSize: 32,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -258,21 +258,21 @@ class _AttendancePageState extends State<AttendancePage> {
                                   horizontal: 12, vertical: 6),
                               decoration: BoxDecoration(
                                 color: store.isBelowThreshold
-                                    ? Colors.redAccent.withOpacity(0.2)
-                                    : AppColors.primaryGold.withOpacity(0.2),
+                                    ? AppColors.primaryRed.withOpacity(0.2)
+                                    : AppColors.accentYellow.withOpacity(0.2),
                                 borderRadius: BorderRadius.circular(20),
                                 border: Border.all(
                                   color: store.isBelowThreshold
-                                      ? Colors.redAccent
-                                      : AppColors.primaryGold,
+                                      ? AppColors.primaryRed
+                                      : AppColors.accentYellow,
                                 ),
                               ),
                               child: Text(
                                 store.isBelowThreshold ? 'Warning' : 'Good',
                                 style: TextStyle(
                                   color: store.isBelowThreshold
-                                      ? Colors.redAccent
-                                      : AppColors.primaryGold,
+                                      ? AppColors.primaryRed
+                                      : AppColors.accentYellow,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),

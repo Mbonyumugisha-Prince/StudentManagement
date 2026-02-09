@@ -5,6 +5,7 @@ import '../attendance/attendance_page.dart';
 import '../attendance/attendance_store.dart';
 import '../assignments/assignment_store.dart';
 import '../schedule/schedule_store.dart';
+import '../schedule/schedule_page.dart';
 import '../widgets/backgroundWithPattern.dart';
 import '../widgets/headerText.dart';
 import '../../core/theme/app_colors.dart';
@@ -121,13 +122,26 @@ class _DashboardPageState extends State<DashboardPage> {
       );
       return;
     }
+    if (index == 3) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (_) => SchedulePage(
+            displayName: widget.displayName,
+            firstName: widget.firstName,
+            lastName: widget.lastName,
+            email: widget.email,
+          ),
+        ),
+      );
+      return;
+    }
     setState(() => selectedNavIndex = index);
   }
 
   @override
   Widget build(BuildContext context) {
-    final bg = Colors.black;
-    final card = AppColors.background;
+    final bg = AppColors.primaryBlue;
+    final card = AppColors.primaryWhite;
     
     final attendanceStore = AttendanceStore.instance;
     final assignmentStore = AssignmentStore.instance;
@@ -157,11 +171,11 @@ class _DashboardPageState extends State<DashboardPage> {
                         const Spacer(),
                         CircleAvatar(
                           radius: 18,
-                          backgroundColor: AppColors.primaryDark,
+                          backgroundColor: AppColors.primaryWhite,
                           child: Text(
                             _initials,
                             style: const TextStyle(
-                              color: AppColors.primaryWhite,
+                              color: AppColors.primaryBlue,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -173,21 +187,21 @@ class _DashboardPageState extends State<DashboardPage> {
                             showDialog(
                               context: context,
                               builder: (_) => AlertDialog(
-                                backgroundColor: Colors.black,
+                                backgroundColor: AppColors.primaryWhite,
                                 title: const Text(
                                   'Confirm Logout',
-                                  style: TextStyle(color: Colors.white),
+                                  style: TextStyle(color: AppColors.textPrimary),
                                 ),
                                 content: const Text(
                                   'Are you sure you want to log out?',
-                                  style: TextStyle(color: Colors.white),
+                                  style: TextStyle(color: AppColors.textSecondary),
                                 ),
                                 actions: [
                                   TextButton(
                                     onPressed: () =>
                                         Navigator.of(context).pop(),
                                     style: TextButton.styleFrom(
-                                      foregroundColor: Colors.white70,
+                                      foregroundColor: AppColors.textSecondary,
                                     ),
                                     child: const Text('Cancel'),
                                   ),
@@ -202,7 +216,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                     },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor:
-                                          AppColors.primaryDark,
+                                          AppColors.primaryRed,
                                       foregroundColor: AppColors.primaryWhite,
                                     ),
                                     child: const Text('Logout'),
@@ -211,7 +225,7 @@ class _DashboardPageState extends State<DashboardPage> {
                               ),
                             );
                           },
-                          icon: const Icon(Icons.logout, color: Colors.white),
+                          icon: const Icon(Icons.logout, color: AppColors.primaryWhite),
                         ),
                       ],
                     ),
@@ -321,19 +335,19 @@ class _DashboardPageState extends State<DashboardPage> {
                         Container(
                           padding: const EdgeInsets.all(14),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFFEE2E2),
+                            color: AppColors.primaryRed.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: const Color(0xFFFCA5A5)),
+                            border: Border.all(color: AppColors.primaryRed),
                           ),
                           child: const Row(
                             children: [
                               Icon(Icons.warning_amber_rounded,
-                                  color: Color(0xFFDC2626)),
+                                  color: AppColors.primaryRed),
                               SizedBox(width: 8),
                               Expanded(
                                 child: Text(
                                   'Your attendance is below 75%. Please improve it.',
-                                  style: TextStyle(color: Color(0xFF991B1B)),
+                                  style: TextStyle(color: AppColors.primaryRed),
                                 ),
                               ),
                             ],
@@ -355,7 +369,7 @@ class _DashboardPageState extends State<DashboardPage> {
                       if (todaySessions.isEmpty)
                         const Padding(
                           padding: EdgeInsets.symmetric(vertical: 8.0),
-                          child: Text('No sessions scheduled for today.', style: TextStyle(color: Colors.grey)),
+                          child: Text('No sessions scheduled for today.', style: TextStyle(color: AppColors.textSecondary)),
                         )
                       else
                         ListView.separated(
@@ -384,7 +398,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                     width: 4,
                                     height: 40,
                                     decoration: BoxDecoration(
-                                      color: AppColors.primaryGold,
+                                      color: AppColors.primaryRed,
                                       borderRadius: BorderRadius.circular(2),
                                     ),
                                   ),
@@ -404,7 +418,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                         Text(
                                           session.location,
                                           style: const TextStyle(
-                                            color: Colors.black54,
+                                            color: AppColors.textSecondary,
                                             fontSize: 13,
                                           ),
                                         ),
@@ -416,7 +430,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                     style: const TextStyle(
                                       fontWeight: FontWeight.w500,
                                       fontSize: 13,
-                                      color: Colors.black87,
+                                      color: AppColors.textPrimary,
                                     ),
                                   ),
                                 ],
@@ -439,7 +453,7 @@ class _DashboardPageState extends State<DashboardPage> {
                        if (upcomingAssignments.isEmpty)
                         const Padding(
                           padding: EdgeInsets.symmetric(vertical: 8.0),
-                          child: Text('No assignments due in the next 7 days.', style: TextStyle(color: Colors.grey)),
+                          child: Text('No assignments due in the next 7 days.', style: TextStyle(color: AppColors.textSecondary)),
                         )
                       else
                         ListView.separated(
@@ -466,7 +480,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                 children: [
                                   Icon(
                                     Icons.assignment_late_outlined,
-                                    color: assignment.priority == 'High' ? Colors.redAccent : Colors.orangeAccent,
+                                    color: assignment.priority == 'High' ? AppColors.primaryRed : AppColors.accentYellow,
                                     size: 24,
                                   ),
                                   const SizedBox(width: 12),
@@ -485,7 +499,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                         Text(
                                           assignment.course,
                                           style: const TextStyle(
-                                            color: Colors.black54,
+                                            color: AppColors.textSecondary,
                                             fontSize: 13,
                                           ),
                                         ),
@@ -500,7 +514,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                         style: const TextStyle(
                                           fontWeight: FontWeight.w500,
                                           fontSize: 13,
-                                          color: Colors.black87,
+                                          color: AppColors.textPrimary,
                                         ),
                                       ),
                                       const SizedBox(height: 2),
@@ -509,7 +523,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                         style: TextStyle(
                                           fontWeight: FontWeight.w400,
                                           fontSize: 11,
-                                          color: assignment.priority == 'High' ? Colors.red : Colors.grey,
+                                          color: assignment.priority == 'High' ? AppColors.primaryRed : AppColors.textSecondary,
                                         ),
                                       ),
                                     ],
@@ -545,7 +559,7 @@ class _DashboardPageState extends State<DashboardPage> {
         const SizedBox(height: 4),
         Text(
           label,
-          style: const TextStyle(color: Colors.black54),
+          style: const TextStyle(color: AppColors.textSecondary),
         ),
       ],
     );

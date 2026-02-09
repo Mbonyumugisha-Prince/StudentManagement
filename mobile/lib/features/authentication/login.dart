@@ -36,7 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Please fill all fields'),
-          backgroundColor: AppColors.error,
+          backgroundColor: AppColors.primaryRed,
         ),
       );
       return;
@@ -56,7 +56,7 @@ class _LoginScreenState extends State<LoginScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Invalid email or password'),
-          backgroundColor: AppColors.error,
+          backgroundColor: AppColors.primaryRed,
         ),
       );
       debugPrint('Login failed - Invalid credentials');
@@ -91,7 +91,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: AppColors.primaryBlue,
       body: BackgroundWithPattern(
         child: Column(
           children: [
@@ -115,7 +115,7 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Container(
                 width: double.infinity,
                 decoration: const BoxDecoration(
-                  color: AppColors.background,
+                  color: AppColors.primaryWhite,
                   borderRadius: BorderRadius.vertical(
                     top: Radius.circular(28),
                   ),
@@ -163,7 +163,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         text: 'Login',
                         onPressed: _login,
                         textColor: AppColors.primaryWhite,
-                        backgroundColor: AppColors.primaryDark,
+                        backgroundColor: AppColors.primaryBlue,
                       ),
                       const SizedBox(height: 12),
                       SignUpLink(

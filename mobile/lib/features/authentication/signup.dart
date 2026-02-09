@@ -41,7 +41,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Passwords do not match'),
-          backgroundColor: AppColors.error,
+          backgroundColor: AppColors.primaryRed,
         ),
       );
       return;
@@ -78,7 +78,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: AppColors.primaryBlue,
       body: BackgroundWithPattern(
         child: Column(
           children: [
@@ -102,7 +102,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               child: Container(
                 width: double.infinity,
                 decoration: const BoxDecoration(
-                  color: AppColors.background,
+                  color: AppColors.primaryWhite,
                   borderRadius: BorderRadius.vertical(
                     top: Radius.circular(28),
                   ),
@@ -167,7 +167,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           text: 'Sign Up',
                           onPressed: _submit,
                           textColor: AppColors.primaryWhite,
-                          backgroundColor: AppColors.primaryDark,
+                          backgroundColor: AppColors.primaryBlue,
                         ),
                         const SizedBox(height: 14),
                         Row(
@@ -186,7 +186,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 'Login',
                                 style: TextStyle(
                                   fontWeight: FontWeight.w600,
-                                  color: AppColors.primaryDark,
+                                  color: AppColors.primaryBlue,
                                   ),
                               ),
                             ),

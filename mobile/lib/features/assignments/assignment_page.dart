@@ -167,14 +167,14 @@ class _AssignmentsPageState extends State<AssignmentsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final bg = Colors.black;
-    final card = AppColors.background;
+    final bg = AppColors.primaryBlue;
+    final card = AppColors.primaryWhite;
 
     return Scaffold(
       backgroundColor: bg,
       floatingActionButton: FloatingActionButton(
-        backgroundColor: AppColors.primaryWhite,
-        child: const Icon(Icons.add, color: Colors.black),
+        backgroundColor: AppColors.primaryBlue,
+        child: const Icon(Icons.add, color: AppColors.primaryWhite),
         onPressed: () => _openForm(),
       ),
       bottomNavigationBar: CustomBottomNavBar(
@@ -207,11 +207,11 @@ class _AssignmentsPageState extends State<AssignmentsPage> {
                           },
                           child: CircleAvatar(
                             radius: 18,
-                            backgroundColor: AppColors.primaryDark,
+                            backgroundColor: AppColors.primaryWhite,
                             child: Text(
                               _initials,
                               style: const TextStyle(
-                                color: AppColors.primaryWhite,
+                                color: AppColors.primaryBlue,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -224,20 +224,20 @@ class _AssignmentsPageState extends State<AssignmentsPage> {
                             showDialog(
                               context: context,
                               builder: (_) => AlertDialog(
-                                backgroundColor: Colors.black,
+                                backgroundColor: AppColors.primaryWhite,
                                 title: const Text(
                                   'Confirm Logout',
-                                  style: TextStyle(color: Colors.white),
+                                  style: TextStyle(color: AppColors.textPrimary),
                                 ),
                                 content: const Text(
                                   'Are you sure you want to log out?',
-                                  style: TextStyle(color: Colors.white),
+                                  style: TextStyle(color: AppColors.textSecondary),
                                 ),
                                 actions: [
                                   TextButton(
                                     onPressed: () => Navigator.of(context).pop(),
                                     style: TextButton.styleFrom(
-                                      foregroundColor: Colors.white70,
+                                      foregroundColor: AppColors.textSecondary,
                                     ),
                                     child: const Text('Cancel'),
                                   ),
@@ -251,7 +251,7 @@ class _AssignmentsPageState extends State<AssignmentsPage> {
                                       );
                                     },
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: AppColors.primaryDark,
+                                      backgroundColor: AppColors.primaryRed,
                                       foregroundColor: AppColors.primaryWhite,
                                     ),
                                     child: const Text('Logout'),
@@ -260,7 +260,7 @@ class _AssignmentsPageState extends State<AssignmentsPage> {
                               ),
                             );
                           },
-                          icon: const Icon(Icons.logout, color: Colors.white),
+                          icon: const Icon(Icons.logout, color: AppColors.primaryWhite),
                         ),
                       ],
                     ),
@@ -315,8 +315,8 @@ class _AssignmentsPageState extends State<AssignmentsPage> {
                                       style: TextStyle(
                                         fontWeight: FontWeight.w600,
                                         color: selectedTab == index
-                                            ? AppColors.primaryDark
-                                            : Colors.grey,
+                                            ? AppColors.primaryBlue
+                                            : AppColors.textSecondary,
                                       ),
                                     ),
                                     if (selectedTab == index)
@@ -324,7 +324,7 @@ class _AssignmentsPageState extends State<AssignmentsPage> {
                                         margin: const EdgeInsets.only(top: 6),
                                         height: 3,
                                         width: 24,
-                                        color: AppColors.primaryDark,
+                                        color: AppColors.primaryRed,
                                       ),
                                   ],
                                 ),
@@ -342,9 +342,9 @@ class _AssignmentsPageState extends State<AssignmentsPage> {
                           itemBuilder: (_, i) {
                             final a = filteredAssignments[i];
                             final priorityColor = a.priority == 'High'
-                                ? AppColors.error
+                                ? AppColors.primaryRed
                                 : a.priority == 'Medium'
-                                    ? Colors.orange
+                                    ? AppColors.accentYellow
                                     : AppColors.success;
                             return Container(
                               padding: const EdgeInsets.all(14),
@@ -374,10 +374,10 @@ class _AssignmentsPageState extends State<AssignmentsPage> {
                                           height: 20,
                                           decoration: BoxDecoration(
                                             color: a.isCompleted
-                                                ? AppColors.primaryDark
+                                                ? AppColors.primaryBlue
                                                 : Colors.transparent,
                                             border: Border.all(
-                                                color: Colors.black26),
+                                                color: AppColors.textSecondary),
                                             borderRadius:
                                                 BorderRadius.circular(5),
                                           ),
@@ -400,7 +400,7 @@ class _AssignmentsPageState extends State<AssignmentsPage> {
                                             decoration: a.isCompleted
                                                 ? TextDecoration.lineThrough
                                                 : null,
-                                            color: a.isCompleted ? Colors.grey : AppColors.textPrimary,
+                                            color: a.isCompleted ? AppColors.textSecondary : AppColors.textPrimary,
                                           ),
                                         ),
                                       ),
@@ -431,7 +431,7 @@ class _AssignmentsPageState extends State<AssignmentsPage> {
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: 10, vertical: 6),
                                         decoration: BoxDecoration(
-                                          color: Colors.grey.shade200,
+                                          color: AppColors.background,
                                           borderRadius:
                                               BorderRadius.circular(20),
                                         ),
@@ -465,14 +465,14 @@ class _AssignmentsPageState extends State<AssignmentsPage> {
                                   Row(
                                     children: [
                                       const Icon(Icons.book_outlined,
-                                          size: 16, color: Colors.black45),
+                                          size: 16, color: AppColors.textSecondary),
                                       const SizedBox(width: 6),
                                       Expanded(
                                         child: Text(
                                           a.course,
                                           overflow: TextOverflow.ellipsis,
                                           style: const TextStyle(
-                                            color: Colors.black54,
+                                            color: AppColors.textSecondary,
                                           ),
                                         ),
                                       ),

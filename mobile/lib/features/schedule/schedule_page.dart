@@ -126,8 +126,8 @@ class _SchedulePageState extends State<SchedulePage> {
 
   @override
   Widget build(BuildContext context) {
-    final bg = Colors.black;
-    final card = AppColors.background;
+    final bg = AppColors.primaryBlue;
+    final card = AppColors.primaryWhite;
     final store = ScheduleStore.instance;
     final sessions = store.getSessionsForDay(selectedDay);
     final dayLabels = const ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -135,8 +135,8 @@ class _SchedulePageState extends State<SchedulePage> {
     return Scaffold(
       backgroundColor: bg,
       floatingActionButton: FloatingActionButton(
-        backgroundColor: AppColors.primaryWhite,
-        child: const Icon(Icons.add, color: Colors.black),
+        backgroundColor: AppColors.primaryBlue,
+        child: const Icon(Icons.add, color: AppColors.primaryWhite),
         onPressed: () => _openSessionForm(),
       ),
       bottomNavigationBar: CustomBottomNavBar(
@@ -169,11 +169,11 @@ class _SchedulePageState extends State<SchedulePage> {
                           },
                           child: CircleAvatar(
                             radius: 18,
-                            backgroundColor: AppColors.primaryDark,
+                            backgroundColor: AppColors.primaryWhite,
                             child: Text(
                               _initials,
                               style: const TextStyle(
-                                color: AppColors.primaryWhite,
+                                color: AppColors.primaryBlue,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -186,21 +186,21 @@ class _SchedulePageState extends State<SchedulePage> {
                             showDialog(
                               context: context,
                               builder: (_) => AlertDialog(
-                                backgroundColor: Colors.black,
+                                backgroundColor: AppColors.primaryWhite,
                                 title: const Text(
                                   'Confirm Logout',
-                                  style: TextStyle(color: Colors.white),
+                                  style: TextStyle(color: AppColors.textPrimary),
                                 ),
                                 content: const Text(
                                   'Are you sure you want to log out?',
-                                  style: TextStyle(color: Colors.white),
+                                  style: TextStyle(color: AppColors.textSecondary),
                                 ),
                                 actions: [
                                   TextButton(
                                     onPressed: () =>
                                         Navigator.of(context).pop(),
                                     style: TextButton.styleFrom(
-                                      foregroundColor: Colors.white70,
+                                      foregroundColor: AppColors.textSecondary,
                                     ),
                                     child: const Text('Cancel'),
                                   ),
@@ -214,8 +214,8 @@ class _SchedulePageState extends State<SchedulePage> {
                                       );
                                     },
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: AppColors.primaryDark,
-                                      foregroundColor: Colors.white,
+                                      backgroundColor: AppColors.primaryRed,
+                                      foregroundColor: AppColors.primaryWhite,
                                     ),
                                     child: const Text('Logout'),
                                   ),
@@ -223,7 +223,7 @@ class _SchedulePageState extends State<SchedulePage> {
                               ),
                             );
                           },
-                          icon: const Icon(Icons.logout, color: Colors.white),
+                          icon: const Icon(Icons.logout, color: AppColors.primaryWhite),
                         ),
                       ],
                     ),
@@ -267,17 +267,17 @@ class _SchedulePageState extends State<SchedulePage> {
                                       horizontal: 16, vertical: 10),
                                   decoration: BoxDecoration(
                                     color: isSelected
-                                        ? AppColors.primaryDark
+                                        ? AppColors.primaryBlue
                                         : Colors.white,
                                     borderRadius: BorderRadius.circular(20),
-                                    border: Border.all(color: Colors.black12),
+                                    border: Border.all(color: isSelected ? AppColors.primaryRed : AppColors.textSecondary),
                                   ),
                                   child: Text(
                                     dayLabels[index],
                                     style: TextStyle(
                                       color: isSelected
-                                          ? Colors.white
-                                          : Colors.black87,
+                                          ? AppColors.primaryWhite
+                                          : AppColors.textPrimary,
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
@@ -326,7 +326,7 @@ class _SchedulePageState extends State<SchedulePage> {
                                           width: 6,
                                           height: 44,
                                           decoration: BoxDecoration(
-                                            color: AppColors.primaryDark,
+                                            color: AppColors.primaryRed,
                                             borderRadius:
                                                 BorderRadius.circular(4),
                                           ),
@@ -347,7 +347,7 @@ class _SchedulePageState extends State<SchedulePage> {
                                               Text(
                                                 s.sessionType,
                                                 style: const TextStyle(
-                                                  color: Colors.black54,
+                                                  color: AppColors.textSecondary,
                                                   fontSize: 12,
                                                 ),
                                               ),
@@ -377,9 +377,13 @@ class _SchedulePageState extends State<SchedulePage> {
                                             Switch(
                                               value: s.isPresent,
                                               activeColor:
-                                                  const Color(0xFF10B981),
+                                                  AppColors.primaryWhite,
+                                              activeTrackColor:
+                                                  AppColors.primaryBlue,
                                               inactiveThumbColor:
-                                                  const Color(0xFFDC2626),
+                                                  AppColors.primaryBlue,
+                                              inactiveTrackColor:
+                                                  AppColors.primaryWhite,
                                               onChanged: (v) {
                                                 setState(() {
                                                   s.isPresent = v;
@@ -572,8 +576,10 @@ class _ScheduleFormState extends State<_ScheduleForm> {
               const Spacer(),
               Switch(
                 value: _isPresent,
-                activeColor: const Color(0xFF10B981),
-                inactiveThumbColor: const Color(0xFFDC2626),
+                activeColor: AppColors.primaryWhite,
+                activeTrackColor: AppColors.primaryBlue,
+                inactiveThumbColor: AppColors.primaryBlue,
+                inactiveTrackColor: AppColors.primaryWhite,
                 onChanged: (v) => setState(() => _isPresent = v),
               ),
             ],
