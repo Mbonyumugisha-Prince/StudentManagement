@@ -6,12 +6,42 @@ class AssignmentStore {
 
   final List<Assignment> _assignments = [];
   bool _seeded = false;
+  final List<Function()> _listeners = [];
 
   List<Assignment> getAll() => List.unmodifiable(_assignments);
+
+  void addListener(Function() listener) {
+    _listeners.add(listener);
+  }
+
+  void removeListener(Function() listener) {
+    _listeners.remove(listener);
+  }
+
+  void _notifyListeners() {
+    for (var listener in _listeners) {
+      listener();
+    }
+  }
 
   void add(Assignment assignment) {
     _assignments.add(assignment);
     _assignments.sort((a, b) => a.dueDate.compareTo(b.dueDate));
+    _notifyListeners();
+  }
+
+  void update(Assignment assignment) {
+    final index = _assignments.indexWhere((a) => a.id == assignment.id);
+    if (index != -1) {
+      _assignments[index] = assignment;
+      _assignments.sort((a, b) => a.dueDate.compareTo(b.dueDate));
+      _notifyListeners();
+    }
+  }
+
+  void delete(String id) {
+    _assignments.removeWhere((a) => a.id == id);
+    _notifyListeners();
   }
 
   void seedIfEmpty() {

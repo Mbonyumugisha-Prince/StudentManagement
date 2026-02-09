@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'assignment_form.dart';
 import 'assignment_model.dart';
+import 'assignment_store.dart';
 import '../authentication/login.dart';
 import '../profile/profile_page.dart';
 import '../attendance/attendance_page.dart';
@@ -33,6 +34,27 @@ class _AssignmentsPageState extends State<AssignmentsPage> {
   List<Assignment> assignments = [];
   int selectedTab = 0;
   int selectedNavIndex = 2;
+  final _assignmentStore = AssignmentStore.instance;
+
+  @override
+  void initState() {
+    super.initState();
+    _assignmentStore.seedIfEmpty();
+    _loadAssignments();
+    _assignmentStore.addListener(_loadAssignments);
+  }
+
+  @override
+  void dispose() {
+    _assignmentStore.removeListener(_loadAssignments);
+    super.dispose();
+  }
+
+  void _loadAssignments() {
+    setState(() {
+      assignments = _assignmentStore.getAll();
+    });
+  }
 
   String get _displayName {
     final full = '${widget.firstName} ${widget.lastName}'.trim();
@@ -85,16 +107,18 @@ class _AssignmentsPageState extends State<AssignmentsPage> {
     );
 
     if (result != null) {
-      setState(() {
-        assignments.removeWhere((a) => a.id == result.id);
-        assignments.add(result);
-        assignments.sort((a, b) => a.dueDate.compareTo(b.dueDate));
-      });
+      if (assignment != null) {
+        // Update existing assignment
+        _assignmentStore.update(result);
+      } else {
+        // Add new assignment
+        _assignmentStore.add(result);
+      }
     }
   }
 
   void _deleteAssignment(Assignment a) {
-    setState(() => assignments.remove(a));
+    _assignmentStore.delete(a.id);
   }
 
   void _onNavTap(int index) {
@@ -342,8 +366,8 @@ class _AssignmentsPageState extends State<AssignmentsPage> {
                                     children: [
                                       GestureDetector(
                                         onTap: () {
-                                          setState(() => a.isCompleted =
-                                              !a.isCompleted);
+                                          a.isCompleted = !a.isCompleted;
+                                          _assignmentStore.update(a);
                                         },
                                         child: Container(
                                           width: 20,

@@ -38,6 +38,20 @@ class _DashboardPageState extends State<DashboardPage> {
     AttendanceStore.instance.seedIfEmpty();
     AssignmentStore.instance.seedIfEmpty();
     ScheduleStore.instance.seedIfEmpty();
+    // Listen for assignment changes
+    AssignmentStore.instance.addListener(_onAssignmentsChanged);
+  }
+
+  @override
+  void dispose() {
+    AssignmentStore.instance.removeListener(_onAssignmentsChanged);
+    super.dispose();
+  }
+
+  void _onAssignmentsChanged() {
+    setState(() {
+      // This will rebuild the widget with updated assignments
+    });
   }
 
   String get _displayName {
