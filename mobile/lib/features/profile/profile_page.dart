@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../attendance/attendance_store.dart';
+import '../widgets/backgroundWithPattern.dart';
+import '../../core/theme/app_colors.dart';
 
 class ProfilePage extends StatelessWidget {
   final String fullName;
@@ -24,8 +26,8 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bg = Colors.black;
-    final card = const Color(0xFFF4F5F4);
+    final bg = AppColors.primaryDark;
+    final card = AppColors.background;
     final attendance = AttendanceStore.instance;
     attendance.seedIfEmpty();
 
@@ -33,108 +35,112 @@ class ProfilePage extends StatelessWidget {
       backgroundColor: bg,
       appBar: AppBar(
         backgroundColor: bg,
-        foregroundColor: Colors.white,
+        foregroundColor: AppColors.primaryWhite,
         elevation: 0,
         title: const Text('Profile'),
       ),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          final minBodyHeight =
-              (constraints.maxHeight - 160).clamp(0, double.infinity) as double;
-          return SingleChildScrollView(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(minHeight: constraints.maxHeight),
-              child: Column(
-                children: [
-                  const SizedBox(height: 12),
-                  CircleAvatar(
-                    radius: 42,
-                    backgroundColor: const Color(0xFF1E293B),
-                    child: Text(
-                      _initials,
+      body: BackgroundWithPattern(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final minBodyHeight =
+                (constraints.maxHeight - 160).clamp(0, double.infinity)
+                    as double;
+            return SingleChildScrollView(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 12),
+                    CircleAvatar(
+                      radius: 42,
+                      backgroundColor: AppColors.primaryWhite,
+                      child: Text(
+                        _initials,
+                        style: const TextStyle(
+                          color: AppColors.primaryBlue,
+                          fontSize: 24,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      fullName.isEmpty ? 'User' : fullName,
                       style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.w700,
+                        color: AppColors.primaryWhite,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    fullName.isEmpty ? 'User' : fullName,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  ConstrainedBox(
-                    constraints: BoxConstraints(minHeight: minBodyHeight),
-                    child: Container(
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: card,
-                        borderRadius: const BorderRadius.vertical(
-                          top: Radius.circular(28),
+                    const SizedBox(height: 24),
+                    ConstrainedBox(
+                      constraints: BoxConstraints(minHeight: minBodyHeight),
+                      child: Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: card,
+                          borderRadius: const BorderRadius.vertical(
+                            top: Radius.circular(28),
+                          ),
                         ),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 24, 20, 24),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Personal Info',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w700,
-                                fontSize: 16,
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(20, 24, 20, 24),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Personal Info',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 16,
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 16),
-                            _infoRow('Full Name',
-                                fullName.isEmpty ? 'User' : fullName),
-                            const SizedBox(height: 12),
-                            _infoRow('Email', email.isEmpty ? '-' : email),
-                            const SizedBox(height: 24),
-                            const Text(
-                              'Attendance Overview',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w700,
-                                fontSize: 16,
+                              const SizedBox(height: 16),
+                              _infoRow('Full Name',
+                                  fullName.isEmpty ? 'User' : fullName),
+                              const SizedBox(height: 12),
+                              _infoRow('Email', email.isEmpty ? '-' : email),
+                              const SizedBox(height: 24),
+                              const Text(
+                                'Attendance Overview',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 16,
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 12),
-                            _statRow('Overall Attendance',
-                                '${attendance.percentage.toStringAsFixed(1)}%'),
-                            const SizedBox(height: 8),
-                            _statRow('Present', '${attendance.presentClasses}'),
-                            const SizedBox(height: 8),
-                            _statRow('Absent', '${attendance.absentClasses}'),
-                            const SizedBox(height: 24),
-                            const Text(
-                              'Assignment Grades',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w700,
-                                fontSize: 16,
+                              const SizedBox(height: 12),
+                              _statRow('Overall Attendance',
+                                  '${attendance.percentage.toStringAsFixed(1)}%'),
+                              const SizedBox(height: 8),
+                              _statRow('Present',
+                                  '${attendance.presentClasses}'),
+                              const SizedBox(height: 8),
+                              _statRow('Absent', '${attendance.absentClasses}'),
+                              const SizedBox(height: 24),
+                              const Text(
+                                'Assignment Grades',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 16,
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 12),
-                            _gradeItem('Building Flutter App', 'A'),
-                            const SizedBox(height: 10),
-                            _gradeItem('Training Model', 'B+'),
-                            const SizedBox(height: 10),
-                            _gradeItem('Entrepreneurial Leadership', 'A-'),
-                          ],
+                              const SizedBox(height: 12),
+                              _gradeItem('Building Flutter App', 'A'),
+                              const SizedBox(height: 10),
+                              _gradeItem('Training Model', 'B+'),
+                              const SizedBox(height: 10),
+                              _gradeItem('Entrepreneurial Leadership', 'A-'),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
@@ -204,14 +210,14 @@ class ProfilePage extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
             decoration: BoxDecoration(
-              color: const Color(0xFF1E293B).withOpacity(0.1),
+              color: AppColors.primaryDark.withOpacity(0.1),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Text(
               grade,
               style: const TextStyle(
                 fontWeight: FontWeight.w700,
-                color: Color(0xFF1E293B),
+                color: AppColors.primaryDark,
               ),
             ),
           ),

@@ -6,6 +6,7 @@ import '../attendance/attendance_store.dart';
 import '../assignments/assignment_store.dart';
 import '../schedule/schedule_store.dart';
 import '../schedule/schedule_page.dart';
+import '../profile/profile_page.dart';
 import '../widgets/backgroundWithPattern.dart';
 import '../widgets/headerText.dart';
 import '../../core/theme/app_colors.dart';
@@ -169,14 +170,26 @@ class _DashboardPageState extends State<DashboardPage> {
                     Row(
                       children: [
                         const Spacer(),
-                        CircleAvatar(
-                          radius: 18,
-                          backgroundColor: AppColors.primaryWhite,
-                          child: Text(
-                            _initials,
-                            style: const TextStyle(
-                              color: AppColors.primaryBlue,
-                              fontWeight: FontWeight.w600,
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) => ProfilePage(
+                                  fullName: _displayName,
+                                  email: widget.email,
+                                ),
+                              ),
+                            );
+                          },
+                          child: CircleAvatar(
+                            radius: 18,
+                            backgroundColor: AppColors.primaryWhite,
+                            child: Text(
+                              _initials,
+                              style: const TextStyle(
+                                color: AppColors.primaryBlue,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ),
                         ),
